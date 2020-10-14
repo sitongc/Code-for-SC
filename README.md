@@ -105,13 +105,15 @@ pheatmap(assay(ntd)[c('ENSMUSG00000000093',
                       'ENSMUSG00000000103',
                       'ENSMUSG00000000305'),], cluster_rows=FALSE, show_rownames=FALSE,
          cluster_cols=FALSE, annotation_col=df) # the gene you are interested in. 
+
 mat <- assay(ntd)[c('ENSMUSG00000000093',
                       'ENSMUSG00000000103',
                       'ENSMUSG00000000305'),]
+                      
 library(biomaRt)
 mart <- useMart("ensembl","mmusculus_gene_ensembl", host = 'uswest.ensembl.org', ensemblRedirect = FALSE)
 gns <- getBM(c("external_gene_name","ensembl_gene_id"), "ensembl_gene_id", row.names(mat), mart)
 row.names(mat)[match(gns[,2], row.names(mat))] <- gns[,1] #notice the order of geneiD and gene name
-pheatmap(mat, show_rownames=TRUE, annotation_col=df,display_numbers =TRUE, cellwidth = 20,cellheight = 10,fontsize = 10 )        
+pheatmap(mat, show_rownames=TRUE, annotation_col=df,display_numbers =TRUE)        
 ```
 
