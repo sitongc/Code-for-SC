@@ -5,7 +5,7 @@ The code for R &amp; Linux &amp; Python
 
 ## DESeq2
 
-### Import salmon results
+#### Import salmon results
 ```
 
 dir <- "Documents/lab/DEseq2/quants"
@@ -15,7 +15,7 @@ files <- file.path(dir, samples, "quant.sf")
 names(files) <-paste0(c('Mouse 2-SVZL-P3','Mouse 2-SVZR-P2','R172H SVZ L4P2','R172H SVZ L5P2','R172H SVZ L6P2','181004#1 SVZ P2','181004#4 SVZ P2','181004#5 SVZ P2','181004#2 SVZ P2','181004#3 SVZ P2')) # sample name
 all(file.exists(files))
 ```
-### Reference gene-level annotation package
+#### Reference gene-level annotation package
 ```
 library(EnsDb.Mmusculus.v79)
 txdb <- EnsDb.Mmusculus.v79
@@ -31,7 +31,7 @@ txi <- tximport(files, type = "salmon", tx2gene = tx2gene, ignoreTxVersion = TRU
 names(txi)
 ```
 
-### Using DESeq2 to analysis differential gene expression
+#### Using DESeq2 to analysis differential gene expression
 ```
 library(DESeq2)
 sampleTable <- data.frame(condition = factor(c(rep("SVZ",2), rep("Control", 8)))
@@ -39,7 +39,7 @@ rownames(sampleTable) <- colnames(txi$counts)
 dds <- DESeqDataSetFromTximport(txi, sampleTable, ~condition)
 ```
 
-### Differential expression analysis
+#### Differential expression analysis
 ```
 dds <- DESeq(dds)
 res <- results(dds, name="condition_treated_vs_untreated")
@@ -47,14 +47,14 @@ res <- results(dds, contrast=c("condition","treated","untreated"))
 res
 ```
 
-### Log fold change shrinkage(reduce noises)
+#### Log fold change shrinkage(reduce noises)
 ```
 resultsNames(dds)
 resLFC <- lfcShrink(dds, coef="condition_treated_vs_untreated", type="apeglm")
 resLFC
 ```
 
-### p-values and adjusted p-values
+#### p-values and adjusted p-values
 ```
 resOrdered <- res[order(res$pvalue),] 
 summary(res)
@@ -63,20 +63,20 @@ res01 <- results(dds, alpha=0.1)
 summary(res01)
 ```
 
-### MA-plot
+#### MA-plot
 Plot counts: examine the counts of reads for a single gene across the group 
 ```
 plotMA(res, ylim=c(-2,2))
 plotCounts(dds, gene=which.min(res$padj), intgroup="condition")
 ```
 
-### Export results to CVS files
+#### Export results to CVS files
 ```
 write.csv(as.data.frame(resOrdered), 
           file="desktop/SVZ_control.csv")
 ```
           
-### Extracting transformed values
+#### Extracting transformed values
 ```
 vsd <- vst(dds, blind=FALSE)
 rld <- rlog(dds, blind=FALSE)
