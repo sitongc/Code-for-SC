@@ -86,6 +86,8 @@ head(assay(vsd), 3)
 #### Effects of transformations on the variance
 standard deviation of transformed data, across samples, aginst the mean, using the shifted logarithm transformation)
 ```
+ntd <- normTransform(dds)
+
 library("vsn")
 meanSdPlot(assay(ntd))
 
@@ -93,6 +95,7 @@ meanSdPlot(assay(vsd))
 
 meanSdPlot(assay(rld))
 ```
+
 #### Heatmap: various transformation of data
 Based on the DEG analysis, we can create a heatmap to visualize the data or chose the gene you interested in. Then Convert Ensembl ID to gene name. 
 ```
@@ -117,3 +120,29 @@ row.names(mat)[match(gns[,2], row.names(mat))] <- gns[,1] #notice the order of g
 pheatmap(mat, show_rownames=TRUE, annotation_col=df,display_numbers =TRUE)        
 ```
 
+#### heatmap of the sample to sample distances
+```
+sampleDists <- dist(t(assay(vsd)))
+library("RColorBrewer")
+sampleDistMatrix <- as.matrix(sampleDists)
+rownames(sampleDistMatrix) <- paste(vsd$condition, vsd$type)
+colnames(sampleDistMatrix) <- NULL
+colors <- colorRampPalette( rev(brewer.pal(9, "Blues")) )(255)
+pheatmap(sampleDistMatrix,
+         clustering_distance_rows=sampleDists,
+         clustering_distance_cols=sampleDists,
+         col=colors)
+```
+#### principal component plot of the samples
+```
+plotPCA(vsd, intgroup=c("condition"))
+```
+#### count outliers
+```
+par(mar=c(8,5,2,2))
+boxplot(log10(assays(dds)[["cooks"]]), range=0, las=2)
+```
+#### dispersion plot
+```
+plotDispEsts(dds)
+```
