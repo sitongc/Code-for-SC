@@ -1,9 +1,9 @@
 # Code-for-SC
 The code for R &amp; Linux &amp; Python
 
-# R
+## R
 
-## DESeq2
+### DESeq2
 
 #### Import salmon results
 ```
@@ -83,7 +83,7 @@ rld <- rlog(dds, blind=FALSE)
 head(assay(vsd), 3)
 ```
 
-### Effects of transformations on the variance
+#### Effects of transformations on the variance
 standard deviation of transformed data, across samples, aginst the mean, using the shifted logarithm transformation)
 ```
 library("vsn")
@@ -93,3 +93,25 @@ meanSdPlot(assay(vsd))
 
 meanSdPlot(assay(rld))
 ```
+#### Heatmap: various transformation of data
+Based on the DEG analysis, we can create a heatmap to visualize the data or chose the gene you interested in. Then Convert Ensembl ID to gene name. 
+```
+library("pheatmap")
+select <- order(rowMeans(counts(dds,normalized=TRUE)),
+                decreasing=TRUE)[1:20] # The 20 genes with the highest expression levels
+df <- as.data.frame(colData(dds)[c("condition")])
+rownames(df) <- colnames(dds)
+pheatmap(assay(ntd)[c('ENSMUSG00000000093',
+                      'ENSMUSG00000000103',
+                      'ENSMUSG00000000305'),], cluster_rows=FALSE, show_rownames=FALSE,
+         cluster_cols=FALSE, annotation_col=df) # the gene you are interested in. 
+mat <- assay(ntd)[c('ENSMUSG00000000093',
+                      'ENSMUSG00000000103',
+                      'ENSMUSG00000000305'),]
+library(biomaRt)
+mart <- useMart("ensembl","mmusculus_gene_ensembl", host = 'uswest.ensembl.org', ensemblRedirect = FALSE)
+gns <- getBM(c("external_gene_name","ensembl_gene_id"), "ensembl_gene_id", row.names(mat), mart)
+row.names(mat)[match(gns[,2], row.names(mat))] <- gns[,1] #notice the order of geneiD and gene name
+pheatmap(mat, show_rownames=TRUE, annotation_col=df,display_numbers =TRUE, cellwidth = 20,cellheight = 10,fontsize = 10 )        
+```
+
