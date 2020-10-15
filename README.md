@@ -70,7 +70,7 @@ Plot counts: examine the counts of reads for a single gene across the group
 plotMA(res, ylim=c(-2,2))
 plotCounts(dds, gene=which.min(res$padj), intgroup="condition")
 ```
-
+![example output](count.pdf)
 #### Export results to CVS files
 ```
 write.csv(as.data.frame(resOrdered), 
@@ -118,7 +118,7 @@ gns <- getBM(c("external_gene_name","ensembl_gene_id"), "ensembl_gene_id", row.n
 row.names(mat)[match(gns[,2], row.names(mat))] <- gns[,1] #notice the order of geneiD and gene name
 pheatmap(mat, show_rownames=TRUE, annotation_col=df,display_numbers =TRUE)        
 ```
-
+![example output](Heatmap.png)
 #### Heatmap of the sample to sample distances
 ```
 sampleDists <- dist(t(assay(vsd)))
@@ -132,7 +132,7 @@ pheatmap(sampleDistMatrix,
          clustering_distance_cols=sampleDists,
          col=colors)
 ```
-
+![example output](sampledis.png)
 
 ### Seurat
 #### Input the data(expression matrix)
