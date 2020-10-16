@@ -70,7 +70,7 @@ Plot counts: examine the counts of reads for a single gene across the group
 plotMA(res, ylim=c(-2,2))
 plotCounts(dds, gene=which.min(res$padj), intgroup="condition")
 ```
-![example output](count.pdf)
+![example output](count.jpg)
 
 #### Export results to CVS files
 ```
@@ -202,7 +202,9 @@ cluster1.markers <- FindMarkers(pbmc, ident.1 = 0, logfc.threshold = 0.25, test.
 VlnPlot(pbmc, features = c('Cd3','Cd19'))##marker 
 FeaturePlot(pbmc, features = c('Pdgfra','Olig1','Olig2')
 ```
-<embed src="https://github.com/sitongc/Code-for-SC/blob/main/Umap.pdf" type="application/pdf" />
+
+![example output](Biomarker.jpg)
+
 ```
 top10 <- pbmc.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC)
 
@@ -212,7 +214,8 @@ names(new.cluster.ids) <- levels(pbmc)
 pbmc <- RenameIdents(pbmc, new.cluster.ids)
 DimPlot(pbmc, reduction = "umap", label = TRUE, pt.size = 0.5) 
 ```
-![example output](Umap.pdf)
+![example output](Umap.jpg)
+
 ```
 DoHeatmap(pbmc, features = top10$gene) 
 ```
