@@ -71,6 +71,7 @@ plotMA(res, ylim=c(-2,2))
 plotCounts(dds, gene=which.min(res$padj), intgroup="condition")
 ```
 ![example output](count.pdf)
+
 #### Export results to CVS files
 ```
 write.csv(as.data.frame(resOrdered), 
@@ -98,19 +99,15 @@ meanSdPlot(assay(rld))
 ```
 
 #### Heatmap: various transformation of data
-Based on the DEG analysis, we can create a heatmap to visualize the data or chose the gene you interested in. Then Convert Ensembl ID to gene name. 
+Based on the DEG analysis, we can create a heatmap to visualize the data. Then Convert Ensembl ID to gene name. 
 ```
 library("pheatmap")
 df <- as.data.frame(colData(dds)[c("condition")])
 rownames(df) <- colnames(dds)
-pheatmap(assay(ntd)[c('ENSMUSG00000000093',
-                      'ENSMUSG00000000103',
-                      'ENSMUSG00000000305'),], cluster_rows=FALSE, show_rownames=FALSE,
+pheatmap(assay(ntd)[select,], cluster_rows=FALSE, show_rownames=FALSE,
          cluster_cols=FALSE, annotation_col=df) # the gene you are interested in. 
 
-mat <- assay(ntd)[c('ENSMUSG00000000093',
-                      'ENSMUSG00000000103',
-                      'ENSMUSG00000000305'),]
+mat <- assay(ntd)[select,],]
                       
 library(biomaRt)
 mart <- useMart("ensembl","mmusculus_gene_ensembl", host = 'uswest.ensembl.org', ensemblRedirect = FALSE)
@@ -203,18 +200,27 @@ pbmc.markers <- FindAllMarkers(pbmc, only.pos = TRUE, min.pct = 0.25, logfc.thre
 pbmc.markers %>% group_by(cluster) %>% top_n(n = 2, wt = avg_logFC)
 cluster1.markers <- FindMarkers(pbmc, ident.1 = 0, logfc.threshold = 0.25, test.use = "roc", only.pos = TRUE)
 VlnPlot(pbmc, features = c('Cd3','Cd19'))##marker 
-FeaturePlot(pbmc, features = c('Ppp1r14b','Acsl','Pdgfra','Olig1','Olig2','Sox2','Ccnd2','Sox11','Chd7','Tcf4','Set'))
+FeaturePlot(pbmc, features = c('Pdgfra','Olig1','Olig2')
+```
+<embed src="https://github.com/sitongc/Code-for-SC/blob/main/Umap.pdf" type="application/pdf" />
+```
 top10 <- pbmc.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC)
-DoHeatmap(pbmc, features = top10$gene) + NoLegend()
 
-new.cluster.ids <- c('RG','Astrocyte','iGC','OPC','pri-OPC','Cycling NB','GABAergic','Glutamatergic','Ependymal')
+
+new.cluster.ids <- c('Immune','Pri-OPC-like','Cycling Pri-OPC-like','Endothelial','COP-like','Hypoxic','mOL','Stressd',)
 names(new.cluster.ids) <- levels(pbmc)
 pbmc <- RenameIdents(pbmc, new.cluster.ids)
+DimPlot(pbmc, reduction = "umap", label = TRUE, pt.size = 0.5) 
 ```
+![example output](Umap.pdf)
+```
+DoHeatmap(pbmc, features = top10$gene) 
+```
+![example output](Cluster.png)
 ### Convert Ensembl ID to gene name. 
 input the file.
 ```
-ID <- read.csv('Desktop/late_control.csv')
+ID <- read.csv('Desktop/Control_control.csv')
 ```
 #### Convert mouse ensebl_gene_id to mouse gene name 
 ```
