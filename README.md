@@ -251,3 +251,146 @@ y <- f[,c('hgnc_symbol','metric')]
 y <- na.omit(y)
 write.table(y,file="desktop/SVZ_control.rnk",quote=F,sep="\t",row.names=F)
 ```
+
+## Linux 
+
+All of the process running in HPC
+
+### Variance calling
+#### BWA mapping 
+```
+for id in /groups/ligrp/sitongchen/scrna/sc/*_1.fastq.gz
+do
+date
+filename=$(basename ${id} _1.fastq.gz)
+filepath=${id%/*}; echo "BWA mapping for ${filename}"
+bwa mem -M -t 20 /groups/ligrp/sitongchen/scrna/22/GRCm38_68.fa ${filepath}/${filename}_1.fastq.gz ${filepath}/${filename}_2.fastq.gz > groups/ligrp/sitongchen/scrna/dpi35/result/sam/${filename}.sam
+```
+#### Sort sam file
+
+```
+date
+echo "Sort sam file"
+gatk SortSam \
+--INPUT /groups/ligrp/sitongchen/scrna/sam/${filename}.sam \
+--OUTPUT /groups/ligrp/sitongchen/scrna/sortbam/${filename}_sorted.bam \
+--SORT_ORDER coordinate
+if [ /groups/ligrp/sitongchen/scrna/sortbam/${filename}_sorted.bam -s ]; then
+rm -f /groups/ligrp/sitongchen/scrna/sam/${filename}.sam
+fi
+```
+
+#### Marking duplicates
+```
+date
+echo "Marking duplicates"
+gatk MarkDuplicates \
+--INPUT /groups/ligrp/sitongchen/scrna/sortbam/${filename}_sorted.bam \
+--METRICS_FILE /groups/ligrp/sitongchen/scrna/sortbam/${filename}_dupMetrics \
+--OUTPUT /groups/ligrp/sitongchen/scrna/sortbam/${filename}_sorted_dupMarked.bam
+if [ /groups/ligrp/sitongchen/scrna/sortbam/${filename}_sorted_dupMarked.bam -s ]; then
+rm -f /groups/ligrp/sitongchen/scrna/sortbam/${filename}_sorted.bam
+fi
+```
+##### Repairing Readgroups
+```
+    date
+    echo "Repairing Readgroups";
+    gatk AddOrReplaceReadGroups \
+    --INPUT /groups/ligrp/sitongchen/scrna/sortbam/${filename}_sorted_dupMarked.bam \
+    --OUTPUT /groups/ligrp/sitongchen/scrna/sortbam/${filename}_sorted_DM_RG.bam \
+    --RGLB illumina_${filename} \
+    --RGPL illumina \
+    --RGPU JR001 \
+    --RGSM ${filename}
+```
+
+#### first recalibration table
+
+```
+gatk BaseRecalibrator \
+--input /groups/ligrp/sitongchen/scrna/sortbam/${filename}_sorted_DM_RG.bam \
+--known-sites /groups/ligrp/sitongchen/scrna/22/mgp.v3.snps.rsIDdbSNPv137.vcf.gz \
+--output /groups/ligrp/sitongchen/scrna/sortbam/${filename}_recal.table \
+--reference /groups/ligrp/sitongchen/scrna/22/GRCm38_68.fa
+
+gatk ApplyBQSR \
+        -R /groups/ligrp/sitongchen/scrna/22/GRCm38_68.fa \
+        -I  /groups/ligrp/sitongchen/scrna/sortbam/${filename}_sorted_DM_RG.bam \
+        --bqsr-recal-file /groups/ligrp/sitongchen/scrna/sortbam/${filename}_recal.table \
+        -O  /groups/ligrp/sitongchen/scrna/sortbam/${filename}_BR.bam
+```
+#### VCF file generation
+```
+gatk Mutect2 \
+-R /groups/ligrp/sitongchen/scrna/22/GRCm38_68.fa \
+-I /groups/ligrp/sitongchen/scrna/sortbam/${filename}_BR.bam \
+-O /groups/ligrp/sitongchen/scrna/gatk/${filename}_raw.vcf.gz
+
+```
+
+#### BCFtool Variance calling 
+```
+for id in /groups/ligrp/sitongchen/scrna/dpi35/result/sortbam/*_BR.bam
+do
+    filename=$(basename ${id} _BR.bam)
+    echo "  -->  process:  $filename"
+    bcftools mpileup --threads 10 -q 20 -Ou -f /groups/ligrp/sitongchen/scrna/22/GRCm38_68.fa  /groups/ligrp/sitongchen/scrna/dpi35/result/sortbam/${filename}_BR.bam | bcftools call --threads 4 -mv -Ov  > /groups/ligrp/sitongchen/scrna/dpi35/result/bcfs/${filename}.raw.vcf
+done
+```
+
+#### scSplitter
+scSplitter is a preprocessing tool designed to convert scRNA seq results into a format suitable for mutation or SNV calling at the single cell level for the purpose of lineage tracing.
+
+```
+STAR --runMode genomeGenerate --genomeDir /groups/ligrp/sitongchen/scrna/dpi35  --genomeFastaFiles /groups/ligrp/sitongchen/scrna/22/mm10.fa --sjdbGTFfile /groups/ligrp/sitongchen/scrna/22/mm10.refGene.gtf -- sjdbOverhang 199
+
+python3 scSplitter.py --ig True --f /groups/ligrp/sitongchen/scrna/dpi35/gel_barcode1_list.txt --i /groups/ligrp/sitongchen/scrna/dpi35/fastqs --r /groups/ligrp/sitongchen/scrna/dpi35/result --ind /groups/ligrp/sitongchen/scrna/dpi35/sta
+STAR --runMode genomeGenerate --genomeDir /groups/ligrp/sitongchen/scrna/dpi35  --genomeFastaFiles /groups/ligrp/sitongchen/scrna/22/mm10.fa --sjdbGTFfile /groups/ligrp/sitongchen/scrna/22/mm10.refGene.gtf -- sjdbOverhang 199
+
+```
+## Python
+
+### Salmon
+Salmon is a  Fast, accurate and bias-aware software for transcript quantification from RNA-seq data.
+
+#### Generate index 
+
+```
+salmon index -t athal.fa.gz -i athal_index
+```
+#### Quantify Sample
+```
+for fn in raw_data/S{13..20};
+do
+samp=`basename ${fn}`
+echo "Processing sample ${samp}"
+salmon quant --validateMappings -i Mus_musculus.GRCm38.cdna.all_index -l A \
+         -1 raw_data/${samp}_1.fq.gz \
+         -2 raw_data/${samp}_2.fq.gz \
+         -p 8 -o quants/${samp}_quant
+done 
+```
+
+#### Create heatmap 
+```
+plt.tight_layout()
+plt.figure(figsize=(100, 600))
+df = pd.read_csv('desktop/gbm1.csv',index_col=0)
+names_rows =pd.read_csv('desktop/gbm1.csv',usecols = [0])
+list = names_rows.values.tolist()
+
+
+linkage_matrix = linkage(df, 'ward')
+dendrogram(
+  linkage_matrix,
+  labels=list
+)
+plt.tight_layout()
+plt.savefig('dpi35.pdf',dpi=300)
+
+
+g = sns.clustermap(df, figsize=(25, 20), method='ward')
+plt.savefig('desktop/lineage_tree_AF_Filter1.pdf', dpi=300 ,bbox_inches='tight')
+```
+![example output](Heatmap2.png)
