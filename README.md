@@ -1,4 +1,4 @@
-# Code-for-SC
+# Code-for-Sitong Chen
 The code for R &amp; Linux &amp; Python
 
 ## R
