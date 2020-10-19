@@ -1,12 +1,12 @@
 # Code-for-Sitong Chen
-The code for R &amp; Linux &amp; Python
+My code for R &amp; Linux &amp; Python
 
 ## R
 
 ### DESeq2
-I used the DESeq2 to do the DEG analysis.
+Differential Gene Expression analysis with DESeq2.
 
-#### Import salmon results
+#### Import Salmon (pseudoaligner) counts
 ```
 
 dir <- "Documents/lab/DEseq2/quants"
@@ -32,7 +32,7 @@ txi <- tximport(files, type = "salmon", tx2gene = tx2gene, ignoreTxVersion = TRU
 names(txi)
 ```
 
-#### Using DESeq2 to analyze differential gene expression
+#### Creating a DESeq2 object
 ```
 library(DESeq2)
 sampleTable <- data.frame(condition = factor(c(rep("SVZ",2), rep("Control", 8)))
@@ -46,13 +46,6 @@ dds <- DESeq(dds)
 res <- results(dds, name="condition_treated_vs_untreated")
 res <- results(dds, contrast=c("condition","treated","untreated"))
 res
-```
-
-#### Log fold change shrinkage(reduce noises)
-```
-resultsNames(dds)
-resLFC <- lfcShrink(dds, coef="condition_treated_vs_untreated", type="apeglm")
-resLFC
 ```
 
 #### p-values and adjusted p-values
@@ -72,7 +65,7 @@ plotCounts(dds, gene=which.min(res$padj), intgroup="condition")
 ```
 ![example output](count.jpg)
 
-#### Export results to CVS files
+#### Export results to CSV files
 ```
 write.csv(as.data.frame(resOrdered), 
           file="desktop/SVZ_control.csv")
@@ -98,8 +91,8 @@ meanSdPlot(assay(vsd))
 meanSdPlot(assay(rld))
 ```
 
-#### Heatmap: various transformation of data
-Based on the DEG analysis, we can create a heatmap to visualize the data. Then Convert Ensembl ID to gene name. 
+#### Heatmap Visualization
+Create a heatmap with converted Ensembl IDs to gene name. 
 ```
 library("pheatmap")
 df <- as.data.frame(colData(dds)[c("condition")])
@@ -131,8 +124,8 @@ pheatmap(sampleDistMatrix,
 ```
 ![example output](sampledis.png)
 
-### Seurat
-#### Input the data(expression matrix)
+### Single-cell RNA-seq Analysis with Seurat 
+#### Input the data (expression matrix)
 ```
 a <- read.csv('/Users/chensitong/Desktop/sc/dpi25/dpi25.csv',header = T, row.names = 1)
 cbmc.rna <- as.sparse(a) 
@@ -176,14 +169,14 @@ DimPlot(pbmc, reduction = "pca")
 DimHeatmap(pbmc, dims = 1, cells = 500, balanced = TRUE)
 ```
 
-#### determine the significant PC
+#### Determine the significant PCs
 ```
 pbmc <- JackStraw(pbmc, num.replicate = 100)
 pbmc <- ScoreJackStraw(pbmc, dims = 1:20)
 JackStrawPlot(pbmc, dims = 1:15)
 ElbowPlot(pbmc)
 ```
-#### clustering 
+#### Clustering 
 ```
 pbmc <- FindNeighbors(pbmc, dims = 1:10)
 pbmc <- FindClusters(pbmc, resolution = 0.25)## resolution determine the number of cluster
@@ -194,7 +187,7 @@ pbmc <- RunUMAP(pbmc, dims = 1:10)
 DimPlot(pbmc, reduction = "umap")
 ```
 
-####  find markers for every cluster compared to all remaining cells, report only the positive ones
+####  Find markers for each cluster.
 ```
 pbmc.markers <- FindAllMarkers(pbmc, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
 pbmc.markers %>% group_by(cluster) %>% top_n(n = 2, wt = avg_logFC)
@@ -225,7 +218,7 @@ input the file.
 ```
 ID <- read.csv('Desktop/Control_control.csv')
 ```
-#### Convert mouse ensebl_gene_id to mouse gene name 
+#### Convert mouse ensembl_gene_id to mouse gene name 
 ```
 library('biomaRt')
 mart <- useMart("ensembl","mmusculus_gene_ensembl", host = 'uswest.ensembl.org', ensemblRedirect = FALSE)
@@ -266,7 +259,7 @@ filename=$(basename ${id} _1.fastq.gz)
 filepath=${id%/*}; echo "BWA mapping for ${filename}"
 bwa mem -M -t 20 /groups/ligrp/sitongchen/scrna/22/GRCm38_68.fa ${filepath}/${filename}_1.fastq.gz ${filepath}/${filename}_2.fastq.gz > groups/ligrp/sitongchen/scrna/dpi35/result/sam/${filename}.sam
 ```
-#### Sort sam file
+#### Sort sam files
 
 ```
 date
@@ -305,7 +298,7 @@ fi
     --RGSM ${filename}
 ```
 
-#### first recalibration table
+#### First recalibration table
 
 ```
 gatk BaseRecalibrator \
