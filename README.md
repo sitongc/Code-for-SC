@@ -3,7 +3,7 @@ My code for R &amp; Linux &amp; Python
 
 ## R
 
-### DESeq2
+### Bulk RNA-seq analysis with DESeq2
 Differential Gene Expression analysis with DESeq2.
 
 #### Import Salmon (pseudoaligner) counts
@@ -11,7 +11,7 @@ Differential Gene Expression analysis with DESeq2.
 
 dir <- "Documents/lab/DEseq2/quants"
 list.files(dir)
-samples <- paste0("Mouse2_", c(seq(1,4)),"_quant")
+samples <- paste0("S", c(seq(11,20)),"_quant")
 files <- file.path(dir, samples, "quant.sf")
 names(files) <-paste0(c('Mouse 2-SVZL-P3','Mouse 2-SVZR-P2','R172H SVZ L4P2','R172H SVZ L5P2','R172H SVZ L6P2','181004#1 SVZ P2','181004#4 SVZ P2','181004#5 SVZ P2','181004#2 SVZ P2','181004#3 SVZ P2')) # sample name
 all(file.exists(files))
@@ -43,8 +43,8 @@ dds <- DESeqDataSetFromTximport(txi, sampleTable, ~condition)
 #### Differential expression analysis
 ```
 dds <- DESeq(dds)
-res <- results(dds, name="condition_treated_vs_untreated")
-res <- results(dds, contrast=c("condition","treated","untreated"))
+res <- results(dds, name="condition_SVZ_vs_Control")
+res <- results(dds, contrast=c("condition","SVZ","Control"))
 res
 ```
 
@@ -134,7 +134,7 @@ gbm <- CreateSeuratObject(counts = cbmc.rna, project = 'dpi25', min.cells = 3, m
 gbm[["percent.mt"]] <- PercentageFeatureSet(gbm, pattern = "^MT-")
 ```
 
-#### expression level data without mt number
+#### Expression level data without mt number
 ```
 VlnPlot(gbm, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3)
 ```
@@ -151,7 +151,7 @@ gbm <- FindVariableFeatures(gbm, selection.method = "vst", nfeatures = 2000)
 top10 <- head(VariableFeatures(gbm), 10)
 ```
 
-#### plot variable features with and without labels
+#### Plot variable features with and without labels
 ```
 plot1 <- VariableFeaturePlot(gbm)
 plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE)
@@ -170,14 +170,14 @@ DimPlot(gbm, reduction = "pca")
 DimHeatmap(gbm, dims = 1, cells = 500, balanced = TRUE)
 ```
 
-#### determine the significant PC
+#### Determine the significant PC
 ```
 gbm <- JackStraw(gbm, num.replicate = 100)
 gbm <- ScoreJackStraw(gbm, dims = 1:20)
 JackStrawPlot(gbm, dims = 1:15)
 ElbowPlot(gbm)
 ```
-#### clustering
+#### Clustering
 ```
 gbm <- FindNeighbors(gbm, dims = 1:10)
 gbm <- FindClusters(gbm, resolution = 0.25)## resolution determine the number of cluster
@@ -188,7 +188,7 @@ gbm <- RunUMAP(gbm, dims = 1:10)
 DimPlot(gbm, reduction = "umap")
 ```
 
-####  find markers for every cluster compared to all remaining cells, report only the positive ones
+####  Find markers for every cluster compared to all remaining cells, report only the positive ones
 ```
 gbm.markers <- FindAllMarkers(gbm, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
 gbm.markers %>% group_by(cluster) %>% top_n(n = 2, wt = avg_logFC)
@@ -352,11 +352,11 @@ Salmon is a  Fast, accurate and bias-aware software for transcript quantificatio
 #### Generate index 
 
 ```
-salmon index -t athal.fa.gz -i athal_index
+salmon index -t Mus_musculus.GRCm38.cdna.all.fa.gz -i Mus_musculus.GRCm38.cdna.all_index
 ```
 #### Quantify Sample
 ```
-for fn in raw_data/S{13..20};
+for fn in raw_data/S{11..20};
 do
 samp=`basename ${fn}`
 echo "Processing sample ${samp}"
