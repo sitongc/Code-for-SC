@@ -1,5 +1,4 @@
 # Code-for-Sitong Chen
-My code for R &amp; Linux &amp; Python
 
 
 ## RNA-seq pipeline
