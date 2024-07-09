@@ -12,37 +12,7 @@ It also provided the **Snakemake** version.
 
 
 
-### Convert Ensembl ID to gene name. 
-input the file.
-```
-ID <- read.csv('Desktop/Control_control.csv')
-```
-#### Convert mouse ensembl_gene_id to mouse gene name 
-```
-library('biomaRt')
-mart <- useMart("ensembl","mmusculus_gene_ensembl", host = 'uswest.ensembl.org', ensemblRedirect = FALSE)
-genes <- ID$X
-mgi <- getBM( attributes= c("ensembl_gene_id",'mgi_symbol'),values=genes,mart= mart,filters= "ensembl_gene_id")
-```
-#### Convert mouse gene name to human gene name
-```
-library(biomaRt)
-human = useMart("ensembl", dataset = "hsapiens_gene_ensembl")
-mouse = useMart("ensembl", dataset = "mmusculus_gene_ensembl")
-genes = mgi$mgi_symbol
-genes = getLDS(attributes = c("mgi_symbol"), filters = "mgi_symbol", values = genes ,mart = mouse, attributesL = c("hgnc_symbol"), martL = human, uniqueRows=T)
-```
 
-### GSEA prerank input file generation. 
-After DEG analysis, I will use GSEA prerank to the enrichment analysis. Here is the code for the GSEA input file.
-```
-f$fcsign <- sign(f$log2FoldChange)
-f$logP <- -log10(f$pvalue)
-f$metric = f$logP/f$fcsign
-y <- f[,c('hgnc_symbol','metric')]
-y <- na.omit(y)
-write.table(y,file="desktop/SVZ_control.rnk",quote=F,sep="\t",row.names=F)
-```
 
 ## Linux 
 
