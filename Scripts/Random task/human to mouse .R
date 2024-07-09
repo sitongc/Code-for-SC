@@ -1,7 +1,15 @@
-library(biomaRt)
-human = useMart("ensembl", dataset = "hsapiens_gene_ensembl",host = 'uswest.ensembl.org', ensemblRedirect = FALSE)
-mouse = useMart("ensembl", dataset = "mmusculus_gene_ensembl",host = 'uswest.ensembl.org', ensemblRedirect = FALSE)
-genesV2 = getLDS(attributes = c("hgnc_symbol"), filters = "hgnc_symbol", values = a$VERHAAK_GLIOBLASTOMA_CLASSICAL, mart = human, attributesL = c("mgi_symbol"), martL = mouse, uniqueRows=T)
+#input the file.
+ID <- read.csv('Desktop/Control_control.csv')
 
+#Convert mouse ensembl_gene_id to mouse gene name
+library('biomaRt')
 mart <- useMart("ensembl","mmusculus_gene_ensembl", host = 'uswest.ensembl.org', ensemblRedirect = FALSE)
-xxx <- getBM( attributes= c("mgi_symbol",'ensembl_gene_id'),values=genesV2$MGI.symbol,mart= mart,filters= 'mgi_symbol')
+genes <- ID$X
+mgi <- getBM( attributes= c("ensembl_gene_id",'mgi_symbol'),values=genes,mart= mart,filters= "ensembl_gene_id")
+
+#Convert mouse gene name to human gene name
+library(biomaRt)
+human = useMart("ensembl", dataset = "hsapiens_gene_ensembl")
+mouse = useMart("ensembl", dataset = "mmusculus_gene_ensembl")
+genes = mgi$mgi_symbol
+genes = getLDS(attributes = c("mgi_symbol"), filters = "mgi_symbol", values = genes ,mart = mouse, attributesL = c("hgnc_symbol"), martL = human, uniqueRows=T)
