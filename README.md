@@ -17,6 +17,7 @@ All of the scripts are available in the **Scripts/**
 
 ## Requirements 
 
+**Basic Requirements**: Python, R, Bash, reference genome. 
 
 
 
