@@ -1,6 +1,7 @@
 # Code-for-Sitong Chen
 This repository contains a comprehensive set of scripts and tools for analyzing RNA-seq, single-cell RNA-seq (SC-RNAseq), whole genome sequencing (WGS) data, machine learning, and various other tasks.
 
+
 ## Project introduce
 
 **RNA-seq Analysis**: Tools and scripts for processing and analyzing bulk RNA sequencing data.
@@ -13,12 +14,20 @@ This repository contains a comprehensive set of scripts and tools for analyzing 
 
 **Miscellaneous Tasks**: Scripts for various random tasks related to omics data analysis.
 
-All of the scripts are available in the **Scripts/**
+All of the scripts are available in the **Scripts/** folder. 
+
 
 ## Requirements 
 
 **Basic Requirements**: Python, R, Bash, reference genome. 
 
+**RNA-seq Analysis**: STAR, Salmon, DESeq2, DARTS, Leafcutter, rMATS. 
+
+**SC-RNAseq Analysis**: Seurat.
+
+**Whole Genome Sequencing (WGS) Analysis**: BWA, GATK, bcftools.
+
+**Machine Learning**: tensorflow, Enformer. 
 
 
 ## RNA-seq pipeline
