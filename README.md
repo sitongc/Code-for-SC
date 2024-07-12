@@ -21,7 +21,7 @@ All of the scripts are available in the **Scripts/** folder.
 
 **Basic Requirements**: Python, R, Bash, reference genome. 
 
-**RNA-seq Analysis**: STAR, Salmon, DESeq2, DARTS, Leafcutter, rMATS. 
+**RNA-seq Analysis**: STAR, Salmon, DESeq2, DARTS, Leafcutter, rMATS, Snakemake. 
 
 **SC-RNAseq Analysis**: Seurat.
 
@@ -42,6 +42,7 @@ It also provided the **Snakemake** version.
 
 ## Contributors
 Author: Sitong Chen
+
 Email: sitong9602@outlook.com
 
 
