@@ -13,6 +13,8 @@ This repository contains a comprehensive set of scripts and tools for analyzing 
 
 **Miscellaneous Tasks**: Scripts for various random tasks related to omics data analysis.
 
+All of the scripts are available in the **Scripts/**
+
 ## Requirements 
 
 
@@ -21,13 +23,16 @@ This repository contains a comprehensive set of scripts and tools for analyzing 
 ## RNA-seq pipeline
 ![example output](RNA-pipeline.png)
 
-All of the scripts are available in **Scripts/RNA-seq/**. 
 
 Besides the softwares were mentions in the pipeline, this part also include 2 other splicing variant softwares, rMATS and Leafcutter. 
 
 It also provided the **Snakemake** version. 
 
 
+
+## Contributors
+Author: Sitong Chen
+Email: sitong9602@outlook.com
 
 
 
