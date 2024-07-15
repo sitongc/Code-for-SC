@@ -1,4 +1,4 @@
-# Code-for-Sitong Chen
+# Srcipts for Sitong Chen
 This repository contains a comprehensive set of scripts and tools for analyzing RNA-seq, single-cell RNA-seq (SC-RNAseq), whole genome sequencing (WGS) data, machine learning, and various other tasks.
 
 
