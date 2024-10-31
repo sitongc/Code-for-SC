@@ -1,5 +1,6 @@
 ## download the cellranger with previous vision 7.2
-curl -o cellranger-7.2.0.tar.gz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-7.2.0.tar.gz?Expires=1730065409&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA&Signature=RwSrYbRwT3gYlKDzAzUChYoqB6Q~EBcySqOivpZOXdySLZbXhl5iKwV8622J~Zt~6NdyvpitzJo~Hfgu54FhsTyjLe~zZfri212S3L92yknLbmo2uTcNWVjzNf5XFGcAEWvYxsQhiFDrgwse85t1DR-NfxPAveMplgsurcJ3rIApXUfy8INp-X19I0X0wnxXodkTVSbNEtXqn3PTI1wBsU6zT59DSfpvvQOkAOXG4-ZZt2Qj8EWA5jYatCs5-mLwbzJ4vX6z2R2emXh~ujrWMdWhtSmM73kEAPin45IOWlYFRE3WHjSgi0x-XQ3XZIX9qWwwDJcjvMLW7JBkIgAazQ__"
+wget -O cellranger-7.2.0.tar.gz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-7.2.0.tar.gz?Expires=1730227655&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA&Signature=oiI4SUIuS0SVkOUjwjg-m6gQvjs5JQt39rvw2POfVCGYZHQ0cNc2iytrOMN3RdoBoDencFKQ3g7oQxJlNS2B2YWdecYaKcj~3nkVhkY-gVNLTz7oIgX0BcEcIMzPUC2nLEbekTTRyGim1bAsSSZE8N8VXz2JB73ufjv1BxpHetxFvQpxCptBewekn7a8QAoM1ESxoTpINtqRzel8IiRHBUPCd4R2RdO~vP7C6CEsqDnYLauIGeU-Ou7snqD1Ik05uEGSpqzcGCUHYNBnPLJio1YLqgQ5LHKVabJOvIDiSyuFZA4XNhCwf79ZR6hkPQMER~Cb5PgAmtjRYTkwVsBHYw__"
+tar -xzvf cellranger-7.2.0.tar.gz
 export PATH=/home/ec2-user/count/cellranger-7.2.0:$PATH
 
 ## download the ref and fastq file from 10X website
