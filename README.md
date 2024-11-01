@@ -6,7 +6,7 @@ This repository contains a comprehensive set of scripts and tools for analyzing 
 
 **RNA-seq Analysis**: Tools and scripts for processing and analyzing bulk RNA sequencing data.(./Scripts/RNA-seq/)
 
-**SC-RNAseq Analysis**: Methods for analyzing single-cell RNA sequencing data, including clustering and differential expression analysis.
+**SC-RNAseq Analysis**: Methods for analyzing single-cell RNA sequencing data, including clustering and differential expression analysis.[SC-RNA Folder](./Scripts/SC-RNA/)
 
 **Whole Genome Sequencing (WGS) Analysis**: Pipelines for variant calling, genome assembly, and other WGS tasks.
 
