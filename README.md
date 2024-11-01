@@ -23,7 +23,7 @@ All of the scripts are available in the **Scripts/** folder.
 
 **RNA-seq Analysis**: STAR, Salmon, DESeq2, DARTS, Leafcutter, rMATS, Snakemake. 
 
-**SC-RNAseq Analysis**: Seurat.
+**SC-RNAseq Analysis**: cellranger, Seurat.
 
 **Whole Genome Sequencing (WGS) Analysis**: BWA, GATK, bcftools.
 
@@ -38,7 +38,9 @@ Besides the softwares were mentions in the pipeline, this part also include 2 ot
 
 It also provided the **Snakemake** version. 
 
+## scRNA-seq pipeline
 
+![example output](scRNA-pipeline.png)
 
 ## Contributors
 Author: Sitong Chen
