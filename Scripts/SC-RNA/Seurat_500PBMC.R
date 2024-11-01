@@ -83,17 +83,8 @@ pbmc$SingleR_label <- singleR_labels$labels
 DimPlot(pbmc, reduction = "umap", group.by = "SingleR_label", label = TRUE, label.size = 4) +
   ggtitle("500 pbmc")
 
-Idents(pbmc) <- "SingleR_label"
-
-#Get cell counts for each label and filter out labels with fewer than 3 cells
-label_counts <- table(Idents(pbmc))
-valid_labels <- names(label_counts[label_counts >= 3])  # Only labels with >= 3 cells
-
-#Run FindMarkers only on valid labels
-top_genes <- lapply(valid_labels, function(label) {
-  markers <- FindMarkers(pbmc, ident.1 = label)
-  return(markers$gene)  
-})
+# create the heatmap based on the SingleR annotation.
+Idents(pbmc) <- pbmc$SingleR_label
 
 # find markers for every cluster compared to all remaining cells, report only the positive
 # ones
