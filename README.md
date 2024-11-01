@@ -4,7 +4,7 @@ This repository contains a comprehensive set of scripts and tools for analyzing 
 
 ## Project introduce
 
-**RNA-seq Analysis**: Tools and scripts for processing and analyzing bulk RNA sequencing data.(./Scripts/RNA-seq)
+**RNA-seq Analysis**: Tools and scripts for processing and analyzing bulk RNA sequencing data.(./Scripts/RNA-seq/)
 
 **SC-RNAseq Analysis**: Methods for analyzing single-cell RNA sequencing data, including clustering and differential expression analysis.
 
