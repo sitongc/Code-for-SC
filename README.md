@@ -40,7 +40,7 @@ It also provided the **Snakemake** version.
 
 ## scRNA-seq pipeline
 
-![example output](scRNA-pipeline.png)
+![example output](scRNA-seq.png)
 
 ## Contributors
 Author: Sitong Chen
