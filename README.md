@@ -8,11 +8,11 @@ This repository contains a comprehensive set of scripts and tools for analyzing 
 
 **SC-RNAseq Analysis**: Methods for analyzing single-cell RNA sequencing data, including clustering and differential expression analysis.[SC-RNA scripts](./Scripts/SC-RNA/)
 
-**Whole Genome Sequencing (WGS) Analysis**: Pipelines for variant calling, genome assembly, and other WGS tasks.[WGS scripts] (./Scripts/WGS/)
+**Whole Genome Sequencing (WGS) Analysis**: Pipelines for variant calling, genome assembly, and other WGS tasks.[WGS scripts](./Scripts/WGS/)
 
-**Machine Learning**: Machine learning models for classification, regression, and clustering of omics data.[ML scripts]
+**Machine Learning**: Machine learning models for classification, regression, and clustering of omics data.[ML scripts](./Scripts/Scripts/machine_learning/)
 
-**Miscellaneous Tasks**: Scripts for various random tasks related to omics data analysis.[other scripts](./Scripts/Random task/)
+**Miscellaneous Tasks**: Scripts for various random tasks related to omics data analysis.[other scripts](./Scripts/Random_task/) 
 
 All of the scripts are available in the **Scripts/** folder. 
 
