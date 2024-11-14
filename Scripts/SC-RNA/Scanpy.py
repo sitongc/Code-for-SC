@@ -5,6 +5,8 @@
 import scvi
 import pandas as pd
 import scanpy as sc
+import celltypist
+
 
 sc.settings.verbosity = 3  # verbosity: errors (0), warnings (1), info (2), hints (3)
 sc.logging.print_header()
@@ -13,7 +15,7 @@ sc.settings.set_figure_params(dpi=80, facecolor="white")
 results_file = "desktop/filtered_feature_bc_matrix/pbmc500.h5ad"
 
 adata = sc.read_10x_mtx(
-    "desktop/filtered_feature_bc_matrix/",  # the directory with the `.mtx` file
+    "filtered_feature_bc_matrix/",  # the directory with the `.mtx` file
     var_names="gene_symbols",  # use gene symbols for the variable names (variables-axis index)
     cache=True,  # write a cache file for faster subsequent reading
 )
@@ -89,10 +91,9 @@ adata.write(results_file)
 pd.DataFrame(adata.uns["rank_genes_groups"]["names"]).head(5)
 
 # annotate the cluster by celltypist
-import celltypist
 model = celltypist.models.Model.load("Immune_All_Low.pkl")
 predictions = celltypist.annotate(adata, model=model, majority_voting=True)
 adata.obs["cell_type"] = predictions.predicted_labels["predicted_labels"]
 
 # Visualize cell types on UMAP
-sc.pl.umap(adata, color="cell_type", legend_loc="on data", title="500PBMC")
+sc.pl.umap(adata, color="cell_type", legend_loc="on data", title="500PBMC", size=80, legend_fontsize=5)
